@@ -1,19 +1,24 @@
 package com.betting.simplebettingapi.model
 
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.UniqueConstraint
 
 @Entity
-class AccountModel(username: String?, name: String?, surname: String?, var balance: Int) {
+class AccountModel(username: String, name: String, surname: String, balance: Int) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id = -1;
+    val id = -1;
 
-    val username = username;
+    @Column(unique = true)
+    val username = username
 
-    val name = name;
+    val name = name
 
-    val surname = surname;
+    val surname = surname
+
+    var balance = balance
 }
