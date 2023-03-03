@@ -16,18 +16,15 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/account")
-class AccountController {
-    @Autowired
-    private val accountService: AccountService? = null
-
+class AccountController(@Autowired private val accountService: AccountService) {
     @GetMapping("/{id}")
     fun handleGet (@PathVariable("id") id: Int): ResponseEntity<AccountDto>{
-        return ResponseEntity<AccountDto>(accountService!!.getAccountById(id), HttpStatus.OK)
+        return ResponseEntity<AccountDto>(accountService.getAccountById(id), HttpStatus.OK)
     }
 
     @PostMapping
     fun handlePost (@RequestBody accountDto: AccountDto): ResponseEntity<HttpHeaders> {
-        val accountId: Int = accountService!!.createAccount(accountDto)
+        val accountId: Int = accountService.createAccount(accountDto)
 
         val httpHeaders = HttpHeaders()
         httpHeaders.add("Location", "/api/v1/account/${accountId}")
