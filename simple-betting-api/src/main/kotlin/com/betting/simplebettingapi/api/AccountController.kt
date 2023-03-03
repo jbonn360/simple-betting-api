@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,17 +21,17 @@ class AccountController {
     private val accountService: AccountService? = null
 
     @GetMapping("/{id}")
-    fun handleGet (id: Int): ResponseEntity<AccountDto>{
+    fun handleGet (@PathVariable("id") id: Int): ResponseEntity<AccountDto>{
         return ResponseEntity<AccountDto>(accountService!!.getAccountById(id), HttpStatus.OK)
     }
 
     @PostMapping
-    fun handlePost (@RequestBody accountDto: AccountDto): ResponseEntity<Any?> {
+    fun handlePost (@RequestBody accountDto: AccountDto): ResponseEntity<HttpHeaders> {
         val accountId: Int = accountService!!.createAccount(accountDto)
 
         val httpHeaders = HttpHeaders()
-        httpHeaders.add("Location", "")
+        httpHeaders.add("Location", "/api/v1/account/${accountId}")
 
-        return ResponseEntity<Any?>(null, HttpStatus.CREATED)
+        return ResponseEntity<HttpHeaders>(httpHeaders, HttpStatus.CREATED)
     }
 }
