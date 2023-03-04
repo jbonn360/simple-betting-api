@@ -14,6 +14,8 @@ class RollModel(rollDt: Instant, number: Byte) {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id = -1
 
+    val rollDt = rollDt
+
     @Min(1)
     @Max(10)
     val number = number

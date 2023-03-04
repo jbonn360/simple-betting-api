@@ -17,7 +17,8 @@ class BetModel(
     placedDt: Instant,
     numberBet: Byte,
     status: BetStatus,
-    @NotNull roll: RollModel
+    roll: RollModel,
+    account: AccountModel
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,4 +35,10 @@ class BetModel(
 
     @Enumerated(EnumType.ORDINAL)
     var status = status
+
+    @OneToOne
+    val roll = roll
+
+    @OneToOne
+    val account = account
 }
