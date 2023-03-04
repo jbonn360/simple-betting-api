@@ -5,6 +5,7 @@ import com.betting.simplebettingapi.dto.TransactionListDto
 import com.betting.simplebettingapi.model.TransactionModel
 import com.betting.simplebettingapi.model.WalletModel
 import com.betting.simplebettingapi.repository.TransactionRepository
+import com.betting.simplebettingapi.repository.WalletRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
@@ -12,15 +13,15 @@ import org.springframework.stereotype.Service
 @Service
 class TransactionServiceImpl(
     @Autowired private val transactionRepository: TransactionRepository,
-    @Lazy @Autowired private val walletService: WalletService
+    @Autowired private val walletRepository: WalletRepository
 ) : TransactionService {
 
     override fun createTransaction(transactionDto: TransactionDto, wallet: WalletModel): TransactionModel {
         val transaction = TransactionModel(
             transactionDto.transactionDt,
             transactionDto.amount,
+            wallet.balance.subtract(transactionDto.amount),
             wallet.balance,
-            wallet.balance.add(transactionDto.amount),
             wallet
         )
 
@@ -30,10 +31,8 @@ class TransactionServiceImpl(
     }
 
     override fun getTransactionsByAccountId(accountId: Int): TransactionListDto {
-        val transactionModels = transactionRepository.findAllByWallet_Id(
-            walletService.getWalletByAccountId(accountId).id
-        );
-
+        val wallet = walletRepository.findByAccount_Id(accountId)
+        val transactionModels = transactionRepository.findAllByWalletOrderByTransactionDtAsc(wallet)
         val transactions = ArrayList<TransactionDto>()
 
         transactionModels.forEach{

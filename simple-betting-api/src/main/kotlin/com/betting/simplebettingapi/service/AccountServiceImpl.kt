@@ -38,10 +38,12 @@ class AccountServiceImpl(
         val account = AccountModel(accountDto.username, accountDto.name, accountDto.surname, walletSaved)
         val accountSaved = accountRepository.save(account)
 
-        //wallet.account = account
+        // linking the wallet back to the account to get a bidirectional relationship for easier querying
+        walletSaved.account = accountSaved
+        walletRepository.save(walletSaved)
 
         // adding initial funds to wallet
-        val initialCreditsTransaction = walletService.updateBalance(accountSaved.wallet, BigDecimal(1000))
+        val initialCreditsTransaction = walletService.updateBalance(walletSaved, BigDecimal(1000))
 
         if (accountSaved != null && initialCreditsTransaction != null)
             return accountSaved.id
