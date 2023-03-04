@@ -6,12 +6,13 @@ import com.betting.simplebettingapi.model.TransactionModel
 import com.betting.simplebettingapi.model.WalletModel
 import com.betting.simplebettingapi.repository.TransactionRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 
 @Service
 class TransactionServiceImpl(
     @Autowired private val transactionRepository: TransactionRepository,
-    @Autowired private val walletService: WalletService
+    @Lazy @Autowired private val walletService: WalletService
 ) : TransactionService {
 
     override fun createTransaction(transactionDto: TransactionDto, wallet: WalletModel): TransactionModel {

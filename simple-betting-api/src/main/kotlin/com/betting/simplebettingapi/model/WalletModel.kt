@@ -13,6 +13,6 @@ class WalletModel (balance: BigDecimal) {
     @PositiveOrZero
     var balance = balance
 
-    //@OneToOne(fetch = FetchType.LAZY)
-    //var account: AccountModel? = null
+    @OneToOne
+    var account: AccountModel? = null
 }
