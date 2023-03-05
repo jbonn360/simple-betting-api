@@ -62,7 +62,7 @@ class WalletServiceImpl(
     }
 
     override fun getWalletByAccountId(accountId: Int): WalletModel {
-        return walletRepository.findByAccount_Id(accountId)
+        return walletRepository.findByAccountId(accountId)
     }
 
 }

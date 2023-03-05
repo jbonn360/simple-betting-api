@@ -7,7 +7,6 @@ import com.betting.simplebettingapi.model.WalletModel
 import com.betting.simplebettingapi.repository.TransactionRepository
 import com.betting.simplebettingapi.repository.WalletRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 
 @Service
@@ -31,7 +30,7 @@ class TransactionServiceImpl(
     }
 
     override fun getTransactionsByAccountId(accountId: Int): TransactionListDto {
-        val wallet = walletRepository.findByAccount_Id(accountId)
+        val wallet = walletRepository.findByAccountId(accountId)
         val transactionModels = transactionRepository.findAllByWalletOrderByTransactionDtDesc(wallet)
         val transactions = ArrayList<TransactionDto>()
 

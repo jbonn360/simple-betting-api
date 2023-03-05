@@ -8,9 +8,9 @@ class Utils {
         fun mapBetModelToDto(betModel: BetModel): BetDto{
             return BetDto(
                 betModel.amount,
+                betModel.numberBet,
                 betModel.status,
                 betModel.placedDt,
-                betModel.numberBet,
                 betModel.roll.rollDt
             )
         }

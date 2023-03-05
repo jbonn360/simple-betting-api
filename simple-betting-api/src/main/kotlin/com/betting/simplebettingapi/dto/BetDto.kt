@@ -7,10 +7,10 @@ import java.time.Instant
 
 class BetDto(
     betAmount: BigDecimal,
-    status: BetStatus,
-    placedDt: Instant,
     numberBetOn: Byte,
-    rollDt: Instant?
+    status: BetStatus = BetStatus.PLACED,
+    placedDt: Instant = Instant.MIN,
+    rollDt: Instant = Instant.MIN
 ) {
     val betAmount = betAmount
     val status = status

@@ -6,7 +6,6 @@ import java.time.Instant
 import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
-import javax.validation.constraints.NotNull
 
 import javax.validation.constraints.Positive
 
@@ -14,9 +13,9 @@ import javax.validation.constraints.Positive
 @Entity
 class BetModel(
     amount: BigDecimal,
-    placedDt: Instant,
-    numberBet: Byte,
+    numberBetOn: Byte,
     status: BetStatus,
+    placedDt: Instant,
     roll: RollModel,
     account: AccountModel
 ) {
@@ -31,7 +30,7 @@ class BetModel(
 
     @Min(1)
     @Max(10)
-    val numberBet = numberBet
+    val numberBet = numberBetOn
 
     @Enumerated(EnumType.ORDINAL)
     var status = status

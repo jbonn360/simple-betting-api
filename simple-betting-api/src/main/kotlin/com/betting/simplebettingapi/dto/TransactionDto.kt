@@ -6,8 +6,8 @@ import java.time.Instant
 class  TransactionDto(
     transactionDt: Instant,
     amount: BigDecimal,
-    balanceBefore: BigDecimal,
-    balanceAfter: BigDecimal)
+    balanceBefore: BigDecimal = BigDecimal(-1),
+    balanceAfter: BigDecimal = BigDecimal(-1))
 {
     val transactionDt = transactionDt
 
@@ -17,7 +17,7 @@ class  TransactionDto(
 
     val balanceAfter = balanceAfter
 
-    constructor(transactionDt: Instant, amount: BigDecimal) :
-            this(transactionDt, amount, BigDecimal(-1), BigDecimal(-1))
+//    constructor(transactionDt: Instant, amount: BigDecimal) :
+//            this(transactionDt, amount, BigDecimal(-1), BigDecimal(-1))
 
 }
