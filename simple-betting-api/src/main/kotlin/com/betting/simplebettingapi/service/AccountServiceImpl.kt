@@ -1,6 +1,7 @@
 package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.AccountDto
+import com.betting.simplebettingapi.dto.WalletDto
 import com.betting.simplebettingapi.exception.AccountCreationException
 import com.betting.simplebettingapi.model.AccountModel
 import com.betting.simplebettingapi.model.WalletModel
@@ -25,7 +26,13 @@ class AccountServiceImpl(
         // todo: handle not found case
         val accountModel = accountRepository.findById(id).get()
 
-        return AccountDto(accountModel.id, accountModel.username, accountModel.name, accountModel.surname)
+        return AccountDto(
+            accountModel.id,
+            accountModel.username,
+            accountModel.name,
+            accountModel.surname,
+            WalletDto(accountModel.wallet.balance)
+        )
     }
 
     @Transactional
@@ -43,13 +50,8 @@ class AccountServiceImpl(
         walletRepository.save(walletSaved)
 
         // adding initial funds to wallet
-        val initialCreditsTransaction = walletService.updateBalance(walletSaved, BigDecimal(1000))
+        walletService.updateBalance(walletSaved, BigDecimal(1000))
 
-        if (accountSaved != null && initialCreditsTransaction != null)
-            return accountSaved.id
-        else{
-            logger.error { "Error occurred while creating account. Changes have been rolled back." }
-            throw AccountCreationException("Failed to save account in database")
-        }
+        return accountSaved.id
     }
 }

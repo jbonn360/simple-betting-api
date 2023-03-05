@@ -30,7 +30,7 @@ class BetModel(
 
     @Min(1)
     @Max(10)
-    val numberBet = numberBetOn
+    val numberBetOn = numberBetOn
 
     @Enumerated(EnumType.ORDINAL)
     var status = status

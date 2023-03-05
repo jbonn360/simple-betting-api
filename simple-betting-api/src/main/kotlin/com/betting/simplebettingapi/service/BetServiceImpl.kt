@@ -61,7 +61,7 @@ class BetServiceImpl(
             betDto.numberBetOn,
             BetStatus.PLACED,
             Instant.now(),
-            rollService.getNextRoll(),
+            rollService.getCurrentRoll(),
             account.get()
         )
 
