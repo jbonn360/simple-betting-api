@@ -3,22 +3,26 @@ package com.betting.simplebettingapi.service
 import com.betting.simplebettingapi.dto.BetDto
 import com.betting.simplebettingapi.dto.BetListDto
 import com.betting.simplebettingapi.exception.EntityNotFoundException
+import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.helpers.BetStatus
 import com.betting.simplebettingapi.helpers.Utils
 import com.betting.simplebettingapi.model.BetModel
 import com.betting.simplebettingapi.repository.AccountRepository
 import com.betting.simplebettingapi.repository.BetRepository
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 
 @Service
 class BetServiceImpl(
     @Autowired private val rollService: RollService,
+    @Autowired private val walletService: WalletService,
     @Autowired private val betRepository: BetRepository,
     @Autowired private val accountRepository: AccountRepository,
 ) : BetService {
+    private val logger = KotlinLogging.logger {}
     override fun getBetsByAccountId(accountId: Int): BetListDto {
         val betModels = betRepository.findAllByAccountIdOrderByPlacedDtDesc(accountId)
         val bets = ArrayList<BetDto>()
@@ -38,16 +42,19 @@ class BetServiceImpl(
             throw EntityNotFoundException("Bet object with id $betId was not found")
     }
 
-    override fun placeBet(accountId: Int, betDto: BetDto): Int {
-        val accountModel = accountRepository.findById(accountId)
+    @Throws(EntityNotFoundException::class, InsufficientCreditsException::class)
+    @Transactional
+    public override fun placeBet(accountId: Int, betDto: BetDto): Int {
+        val account = accountRepository.findById(accountId)
 
         //todo: replace with proper kotlin null handling
-        if(accountModel.isEmpty)
+        if(account.isEmpty){
+            logger.error { "Error occurred while retrieving account with id $accountId to place bet" }
             throw EntityNotFoundException("Account with id $accountId was not found")
+        }
 
-        val betDto1 = BetDto(
-            BigDecimal(12), 4
-        )
+        if(account.get().wallet.balance < betDto.betAmount)
+            throw InsufficientCreditsException("Bet placement failed due to insufficient credits")
 
         val bet = BetModel(
             betDto.betAmount,
@@ -55,10 +62,13 @@ class BetServiceImpl(
             BetStatus.PLACED,
             Instant.now(),
             rollService.getNextRoll(),
-            accountModel.get()
+            account.get()
         )
 
         val betSaved = betRepository.save(bet)
+
+        val newBalance = account.get().wallet.balance.subtract(betDto.betAmount)
+        walletService.updateBalance(account.get().wallet, newBalance)
 
         return betSaved.id
     }

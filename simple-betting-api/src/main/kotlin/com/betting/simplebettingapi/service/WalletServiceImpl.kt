@@ -1,6 +1,7 @@
 package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.TransactionDto
+import com.betting.simplebettingapi.exception.EntityNotFoundException
 import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.exception.InvalidTransactionException
 import com.betting.simplebettingapi.model.TransactionModel
@@ -34,7 +35,8 @@ class WalletServiceImpl(
         val walletUpdated: WalletModel
 
         if (newBalance < BigDecimal.ZERO) // if new balance is less than zero
-            throw InsufficientCreditsException("Cannot set wallet balance to $newBalance")
+            throw InsufficientCreditsException("Cannot set wallet balance to $newBalance. " +
+                    "Transaction has been rolled back.")
         else if (newBalance == wallet.balance) // if transaction amount is zero
             throw InvalidTransactionException("Cannot have a transaction with amount set to 0")
         else {
@@ -43,7 +45,7 @@ class WalletServiceImpl(
             walletUpdated = walletRepository.save(wallet)
         }
 
-        if(walletUpdated == null){
+        if (walletUpdated == null) {
             logger.error { "Error occurred while updating the wallet's balance" }
             throw Exception("Failed to update wallet in database")
         }
@@ -53,7 +55,7 @@ class WalletServiceImpl(
             TransactionDto(Instant.now(), transactionAmount), wallet
         )
 
-        if(transaction == null){
+        if (transaction == null) {
             logger.error { "Error occurred while persisting the transaction record in the database" }
             throw Exception("Failed to persist transaction record in database")
         }

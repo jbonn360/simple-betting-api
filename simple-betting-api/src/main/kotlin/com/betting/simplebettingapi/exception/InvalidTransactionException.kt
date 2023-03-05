@@ -1,3 +1,3 @@
 package com.betting.simplebettingapi.exception
 
-class InvalidTransactionException(message: String) : Exception(message)
+class InvalidTransactionException(message: String) : RuntimeException(message)

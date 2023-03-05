@@ -16,8 +16,4 @@ class  TransactionDto(
     val balanceBefore = balanceBefore
 
     val balanceAfter = balanceAfter
-
-//    constructor(transactionDt: Instant, amount: BigDecimal) :
-//            this(transactionDt, amount, BigDecimal(-1), BigDecimal(-1))
-
 }

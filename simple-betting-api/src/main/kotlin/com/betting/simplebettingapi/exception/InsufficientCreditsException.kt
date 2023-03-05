@@ -1,3 +1,3 @@
 package com.betting.simplebettingapi.exception
 
-class InsufficientCreditsException(message: String) : Exception(message)
+class InsufficientCreditsException(message: String) : RuntimeException(message)
