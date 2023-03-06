@@ -8,6 +8,7 @@ import com.betting.simplebettingapi.repository.BetRepository
 import com.betting.simplebettingapi.repository.RollRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -18,13 +19,13 @@ import java.util.concurrent.TimeUnit
 class RollServiceImpl(
     @Autowired private val walletService: WalletService,
     @Autowired private val rollRepository: RollRepository,
-    @Autowired private val betRepository: BetRepository
+    @Autowired private val betRepository: BetRepository,
+    @Value("\${app.roll.interval-mins}") private val rollInterval: Byte
 ) : RollService {
-    private val rollInterval = 1
     private var currentRoll: RollModel = createAndPersistNewRollEntity()
     private val logger = KotlinLogging.logger {}
 
-    final fun createAndPersistNewRollEntity(): RollModel{
+    final fun createAndPersistNewRollEntity(): RollModel {
         val roll = RollModel(Instant.now().plus(rollInterval.toLong(), ChronoUnit.MINUTES))
         return rollRepository.save(roll)
     }
@@ -33,12 +34,16 @@ class RollServiceImpl(
         return currentRoll
     }
 
-    // roll a new number every 1 minute (short interval for easier testing)
-    @Scheduled(fixedRate = 1, initialDelay = 1, timeUnit = TimeUnit.MINUTES,)
+    // roll a new number every x minutes
+    @Scheduled(
+        fixedRateString = "\${app.roll.interval-mins}",
+        initialDelayString = "\${app.roll.interval-mins}",
+        timeUnit = TimeUnit.MINUTES,
+    )
     fun rollNextNumber() {
         //1. if there are no bets on current roll, postpone the roll
         val bets = betRepository.findAllByRoll(this.currentRoll)
-        if(bets.isEmpty()){
+        if (bets.isEmpty()) {
             logger.info { "No bets found, postponing roll..." }
             currentRoll = postponeRoll(currentRoll, rollInterval.toLong())
             return
@@ -61,13 +66,13 @@ class RollServiceImpl(
         this.currentRoll = createAndPersistNewRollEntity()
     }
 
-    fun postponeRoll(roll: RollModel, durationMins: Long): RollModel{
+    fun postponeRoll(roll: RollModel, durationMins: Long): RollModel {
         roll.rollDt = roll.rollDt.plus(durationMins, ChronoUnit.MINUTES)
         return rollRepository.save(roll)
     }
 
-    fun updateBetsAndRewardWinners(bets: List<BetModel>, curRollResult: Byte){
-        for(bet in bets){
+    fun updateBetsAndRewardWinners(bets: List<BetModel>, curRollResult: Byte) {
+        for (bet in bets) {
             // check if bet won or lost
             val betResult = Utils.classifyBetResult(bet.numberBetOn, curRollResult)
 
@@ -76,7 +81,7 @@ class RollServiceImpl(
             betRepository.save(bet)
 
             // credit wallet if won
-            if(BetStatus.isWinningStatus(betResult)){
+            if (BetStatus.isWinningStatus(betResult)) {
                 val creditsWon = Utils.calculatePrize(bet.amount, betResult)
                 val wallet = bet.account.wallet
 

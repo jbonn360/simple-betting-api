@@ -1,5 +1,0 @@
-INSERT INTO bet_status (id, name) VALUES (1, 'Placed');
-INSERT INTO bet_status (id, name) VALUES (2, 'Won_10');
-INSERT INTO bet_status (id, name) VALUES (3, 'Won_5');
-INSERT INTO bet_status (id, name) VALUES (4, 'Won_Half');
-INSERT INTO bet_status (id, name) VALUES (5, 'Lost');
