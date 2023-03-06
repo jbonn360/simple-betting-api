@@ -1,6 +1,7 @@
 package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.helpers.BetStatus
+import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.helpers.Utils
 import com.betting.simplebettingapi.model.BetModel
 import com.betting.simplebettingapi.model.RollModel
@@ -85,7 +86,7 @@ class RollServiceImpl(
                 val creditsWon = Utils.calculatePrize(bet.amount, betResult)
                 val wallet = bet.account.wallet
 
-                walletService.updateBalance(wallet, wallet.balance.add(creditsWon))
+                walletService.updateBalance(wallet, wallet.balance.add(creditsWon), TransactionType.BET_WIN)
             }
         }
     }

@@ -1,17 +1,14 @@
 package com.betting.simplebettingapi.model
 
+import com.betting.simplebettingapi.helpers.TransactionType
 import java.math.BigDecimal
 import java.time.Instant
-import java.time.ZonedDateTime
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.OneToOne
+import javax.persistence.*
 
 @Entity
 class TransactionModel(
     transactionDt: Instant,
+    transactionType: TransactionType,
     amount: BigDecimal,
     balanceBefore: BigDecimal,
     balanceAfter: BigDecimal,
@@ -22,6 +19,9 @@ class TransactionModel(
     val id = -1
 
     val amount = amount
+
+    @Enumerated(EnumType.ORDINAL)
+    val transactionType = transactionType
 
     val balanceBefore = balanceBefore
 

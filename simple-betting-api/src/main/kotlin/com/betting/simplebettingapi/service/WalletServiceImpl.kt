@@ -4,6 +4,7 @@ import com.betting.simplebettingapi.dto.TransactionDto
 import com.betting.simplebettingapi.exception.EntityNotFoundException
 import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.exception.InvalidTransactionException
+import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.model.TransactionModel
 import com.betting.simplebettingapi.model.WalletModel
 import com.betting.simplebettingapi.repository.WalletRepository
@@ -30,7 +31,7 @@ class WalletServiceImpl(
      */
     @Throws(InsufficientCreditsException::class, InvalidTransactionException::class)
     @Transactional
-    override fun updateBalance(wallet: WalletModel, newBalance: BigDecimal): TransactionModel {
+    override fun updateBalance(wallet: WalletModel, newBalance: BigDecimal, transactionType: TransactionType): TransactionModel {
         val transactionAmount = newBalance - wallet.balance
         val walletUpdated: WalletModel
 
@@ -52,7 +53,7 @@ class WalletServiceImpl(
 
         // saving the transaction
         val transaction = transactionService.createTransaction(
-            TransactionDto(Instant.now(), transactionAmount), wallet
+            TransactionDto(Instant.now(), transactionType, transactionAmount), wallet
         )
 
         if (transaction == null) {

@@ -3,6 +3,7 @@ package com.betting.simplebettingapi.service
 import com.betting.simplebettingapi.dto.AccountDto
 import com.betting.simplebettingapi.dto.WalletDto
 import com.betting.simplebettingapi.exception.AccountCreationException
+import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.model.AccountModel
 import com.betting.simplebettingapi.model.WalletModel
 import com.betting.simplebettingapi.repository.AccountRepository
@@ -50,7 +51,7 @@ class AccountServiceImpl(
         walletRepository.save(walletSaved)
 
         // adding initial funds to wallet
-        walletService.updateBalance(walletSaved, BigDecimal(1000))
+        walletService.updateBalance(walletSaved, BigDecimal(1000), TransactionType.INITIAL_DEPOSIT)
 
         return accountSaved.id
     }

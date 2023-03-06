@@ -18,6 +18,7 @@ class TransactionServiceImpl(
     override fun createTransaction(transactionDto: TransactionDto, wallet: WalletModel): TransactionModel {
         val transaction = TransactionModel(
             transactionDto.transactionDt,
+            transactionDto.transactionType,
             transactionDto.amount,
             wallet.balance.subtract(transactionDto.amount),
             wallet.balance,
@@ -35,7 +36,7 @@ class TransactionServiceImpl(
         val transactions = ArrayList<TransactionDto>()
 
         transactionModels.forEach{
-            tm -> transactions.add(TransactionDto(tm.transactionDt, tm.amount, tm.balanceBefore, tm.balanceAfter))
+            tm -> transactions.add(TransactionDto(tm.transactionDt, tm.transactionType, tm.amount, tm.balanceBefore, tm.balanceAfter))
         }
 
         return TransactionListDto(transactions)

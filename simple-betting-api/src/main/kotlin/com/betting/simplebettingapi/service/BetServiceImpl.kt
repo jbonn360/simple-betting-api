@@ -5,6 +5,7 @@ import com.betting.simplebettingapi.dto.BetListDto
 import com.betting.simplebettingapi.exception.EntityNotFoundException
 import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.helpers.BetStatus
+import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.helpers.Utils
 import com.betting.simplebettingapi.model.BetModel
 import com.betting.simplebettingapi.repository.AccountRepository
@@ -68,7 +69,7 @@ class BetServiceImpl(
         val betSaved = betRepository.save(bet)
 
         val newBalance = account.get().wallet.balance.subtract(betDto.betAmount)
-        walletService.updateBalance(account.get().wallet, newBalance)
+        walletService.updateBalance(account.get().wallet, newBalance, TransactionType.BET_PLACEMENT)
 
         return betSaved.id
     }
