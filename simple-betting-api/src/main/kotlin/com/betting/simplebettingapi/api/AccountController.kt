@@ -19,12 +19,12 @@ import javax.validation.Valid
 @RequestMapping("/api/v1/account")
 class AccountController(@Autowired private val accountService: AccountService) {
     @GetMapping("/{id}", produces = ["application/json"])
-    fun handleGet (@PathVariable("id") id: Int): ResponseEntity<AccountDto>{
+    fun getAccountById (@PathVariable("id") id: Int): ResponseEntity<AccountDto>{
         return ResponseEntity<AccountDto>(accountService.getAccountById(id), HttpStatus.OK)
     }
 
     @PostMapping(consumes = ["application/json"])
-    fun handlePost (@Valid @RequestBody accountDto: AccountDto): ResponseEntity<HttpHeaders> {
+    fun createNewAccount (@Valid @RequestBody accountDto: AccountDto): ResponseEntity<HttpHeaders> {
         val accountId: Int = accountService.createAccount(accountDto)
 
         val httpHeaders = HttpHeaders()
