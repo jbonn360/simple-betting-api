@@ -1,11 +1,13 @@
 package com.betting.simplebettingapi.dto
 
-class AccountDto(val id: Int = -1, username: String, name: String, surname: String, wallet: WalletDto?) {
-    val username = username
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
-    val name = name
-
-    val surname = surname
-
-    val wallet = wallet
-}
+class AccountDto(
+    val id: Int = -1,
+    @field:Size(min = 3, max = 10) val username: String,
+    @field:Size(min = 3, max = 10) val name: String,
+    @field:Size(min = 3, max = 10) val surname: String,
+    val wallet: WalletDto?
+)

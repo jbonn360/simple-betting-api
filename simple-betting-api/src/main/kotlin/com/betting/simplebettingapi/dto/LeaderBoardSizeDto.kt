@@ -1,5 +1,5 @@
 package com.betting.simplebettingapi.dto
 
-class LeaderBoardSizeDto (size: Int) {
-    val size = size
-}
+import javax.validation.constraints.Positive
+
+class LeaderBoardSizeDto (@field:Positive val size: Int)

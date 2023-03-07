@@ -12,32 +12,14 @@ import javax.validation.constraints.Positive
 
 @Entity
 class BetModel(
-    amount: BigDecimal,
-    numberBetOn: Byte,
-    status: BetStatus,
-    placedDt: Instant,
-    roll: RollModel,
-    account: AccountModel
-) {
+    @field:Positive val amount: BigDecimal,
+    @field:Min(1) @field:Max(10) val numberBetOn: Byte,
+    @Enumerated(EnumType.ORDINAL) var status: BetStatus,
+    val placedDt: Instant,
+    @OneToOne val roll: RollModel,
+    @OneToOne val account: AccountModel
+){
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id = -1;
-
-    @Positive
-    val amount = amount
-
-    val placedDt = placedDt
-
-    @Min(1)
-    @Max(10)
-    val numberBetOn = numberBetOn
-
-    @Enumerated(EnumType.ORDINAL)
-    var status = status
-
-    @OneToOne
-    val roll = roll
-
-    @OneToOne
-    val account = account
+    val id: Int = -1
 }

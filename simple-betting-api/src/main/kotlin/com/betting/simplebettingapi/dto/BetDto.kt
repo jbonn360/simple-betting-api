@@ -6,23 +6,17 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import java.math.BigDecimal
 import java.time.Instant
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
+import javax.validation.constraints.Positive
+import javax.validation.constraints.PositiveOrZero
 
 
 class BetDto(
-    betAmount: BigDecimal,
-    numberBetOn: Byte,
-    amountWon: BigDecimal?,
-    status: BetStatus = BetStatus.PLACED,
-    placedDt: Instant = Instant.MIN,
-    roll: RollDto?,
-) {
-    val betAmount = betAmount
-    val numberBetOn = numberBetOn
-
-    @JsonInclude(Include.NON_NULL)
-    val amountWon = amountWon
-
-    val status = status
-    val placedDt = placedDt
-    val roll = roll
-}
+    @field:Positive val betAmount: BigDecimal,
+    @field:Min(1) @field:Max(10) val numberBetOn: Byte,
+    @field:PositiveOrZero @field:JsonInclude(Include.NON_NULL) val amountWon: BigDecimal?,
+    val status: BetStatus = BetStatus.PLACED,
+    val placedDt: Instant = Instant.MIN,
+    val roll: RollDto?,
+)

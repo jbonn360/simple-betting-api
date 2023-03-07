@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 
 @RestController
@@ -23,7 +24,7 @@ class AccountController(@Autowired private val accountService: AccountService) {
     }
 
     @PostMapping
-    fun handlePost (@RequestBody accountDto: AccountDto): ResponseEntity<HttpHeaders> {
+    fun handlePost (@Valid @RequestBody accountDto: AccountDto): ResponseEntity<HttpHeaders> {
         val accountId: Int = accountService.createAccount(accountDto)
 
         val httpHeaders = HttpHeaders()

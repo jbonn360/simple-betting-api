@@ -5,19 +5,9 @@ import java.math.BigDecimal
 import java.time.Instant
 
 class  TransactionDto(
-    transactionDt: Instant,
-    transactionType: TransactionType,
-    amount: BigDecimal,
-    balanceBefore: BigDecimal = BigDecimal(-1),
-    balanceAfter: BigDecimal = BigDecimal(-1))
-{
-    val transactionDt = transactionDt
-
-    val transactionType = transactionType
-
-    val amount = amount
-
-    val balanceBefore = balanceBefore
-
-    val balanceAfter = balanceAfter
-}
+    val transactionDt: Instant,
+    val transactionType: TransactionType,
+    val amount: BigDecimal,
+    val balanceBefore: BigDecimal = BigDecimal(-1),
+    val balanceAfter: BigDecimal = BigDecimal(-1)
+)

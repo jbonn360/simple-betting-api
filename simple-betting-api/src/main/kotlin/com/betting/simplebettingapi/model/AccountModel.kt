@@ -10,18 +10,11 @@ import javax.persistence.OneToOne
 import javax.validation.constraints.NotNull
 
 @Entity
-class AccountModel(username: String, name: String, surname: String, wallet: WalletModel) {
+class AccountModel(
+    @Column(unique = true) val username: String, val name: String, val surname: String,
+    @OneToOne val wallet: WalletModel
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id = -1;
-
-    @Column(unique = true)
-    val username = username
-
-    val name = name
-
-    val surname = surname
-
-    @OneToOne
-    val wallet = wallet
 }

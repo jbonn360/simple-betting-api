@@ -7,28 +7,14 @@ import javax.persistence.*
 
 @Entity
 class TransactionModel(
-    transactionDt: Instant,
-    transactionType: TransactionType,
-    amount: BigDecimal,
-    balanceBefore: BigDecimal,
-    balanceAfter: BigDecimal,
-    wallet: WalletModel
+    val transactionDt: Instant,
+    @Enumerated(EnumType.ORDINAL) val transactionType: TransactionType,
+    val amount: BigDecimal,
+    val balanceBefore: BigDecimal,
+    val balanceAfter: BigDecimal,
+    @OneToOne val wallet: WalletModel
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id = -1
-
-    val amount = amount
-
-    @Enumerated(EnumType.ORDINAL)
-    val transactionType = transactionType
-
-    val balanceBefore = balanceBefore
-
-    val balanceAfter = balanceAfter
-
-    @OneToOne
-    val wallet = wallet
-
-    val transactionDt = transactionDt
 }
