@@ -2,6 +2,7 @@ package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.AccountDto
 import com.betting.simplebettingapi.dto.WalletDto
+import com.betting.simplebettingapi.exception.EntityNotFoundException
 import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.model.AccountModel
 import com.betting.simplebettingapi.model.WalletModel
@@ -23,15 +24,18 @@ class AccountServiceImpl(
     private val logger = KotlinLogging.logger {}
 
     override fun getAccountById(id: Int): AccountDto {
-        // todo: handle not found case
-        val accountModel = accountRepository.findById(id).get()
+        val accountModel = accountRepository.findById(id)
+
+        if(accountModel.isEmpty) throw EntityNotFoundException("Account with id $id does not exist")
+
+        val account = accountModel.get()
 
         return AccountDto(
-            accountModel.id,
-            accountModel.username,
-            accountModel.name,
-            accountModel.surname,
-            WalletDto(accountModel.wallet.balance)
+            account.id,
+            account.username,
+            account.name,
+            account.surname,
+            WalletDto(account.wallet.balance)
         )
     }
 

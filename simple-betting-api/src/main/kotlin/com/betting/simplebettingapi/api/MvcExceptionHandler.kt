@@ -2,13 +2,11 @@ package com.betting.simplebettingapi.api
 
 import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.exception.InvalidTransactionException
-import com.betting.simplebettingapi.exception.NumberOutOfBoundsException
-import org.springframework.boot.context.properties.bind.BindException
+import com.betting.simplebettingapi.exception.EntityNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import javax.persistence.EntityNotFoundException
 import javax.validation.ConstraintViolationException
 
 @ControllerAdvice
