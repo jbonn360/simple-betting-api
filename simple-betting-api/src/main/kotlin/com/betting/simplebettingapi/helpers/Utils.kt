@@ -4,11 +4,19 @@ import com.betting.simplebettingapi.dto.BetDto
 import com.betting.simplebettingapi.dto.RollDto
 import com.betting.simplebettingapi.exception.NumberOutOfBoundsException
 import com.betting.simplebettingapi.model.BetModel
+import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import kotlin.math.abs
 import kotlin.random.Random
 
+@Component
 class Utils {
+    fun generateRandomNumberRoll(): Byte {
+        val random = Random.nextInt(1, 11)
+
+        return random.toByte()
+    }
+
     companion object {
         fun mapBetModelToDto(betModel: BetModel): BetDto {
             var rollResult: Byte? = null
@@ -43,12 +51,6 @@ class Utils {
             }
 
             return result
-        }
-
-        fun generateRandomNumberRoll(): Byte {
-            val random = Random.nextInt(1, 11)
-
-            return random.toByte()
         }
 
         fun classifyBetResult(numberBetOn: Byte, rollResult: Byte): BetStatus {

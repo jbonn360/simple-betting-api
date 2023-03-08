@@ -21,6 +21,7 @@ class RollServiceImpl(
     @Autowired private val walletService: WalletService,
     @Autowired private val rollRepository: RollRepository,
     @Autowired private val betRepository: BetRepository,
+    @Autowired private val utils: Utils,
     @Value("\${app.roll.interval-mins}") private val rollInterval: Byte
 ) : RollService {
     private var currentRoll: RollModel = createAndPersistNewRollEntity()
@@ -52,7 +53,7 @@ class RollServiceImpl(
 
         // 2. perform operations to close the current round
         // a. generate the current roll result
-        val curRollResult = Utils.generateRandomNumberRoll()
+        val curRollResult = utils.generateRandomNumberRoll()
         logger.info { "Rolled new number '$curRollResult'" }
 
         // b. update bet entities associated with current bet and wallet

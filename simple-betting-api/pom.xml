@@ -98,11 +98,19 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
+			<groupId>com.ninja-squad</groupId>
+			<artifactId>springmockk</artifactId>
+			<version>3.0.1</version>
 			<scope>test</scope>
 		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>org.junit.jupiter</groupId>-->
+<!--			<artifactId>junit-jupiter-engine</artifactId>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
     </dependencies>
 
 	<build>
@@ -123,7 +131,14 @@
 					<compilerPlugins>
 						<plugin>spring</plugin>
 						<plugin>jpa</plugin>
+						<plugin>all-open</plugin>
+						<plugin>no-arg</plugin>
 					</compilerPlugins>
+					<pluginOptions>
+						<option>all-open:annotation=javax.persistence.Entity</option>
+						<option>all-open:annotation=javax.persistence.Embeddable</option>
+						<option>all-open:annotation=javax.persistence.MappedSuperclass</option>
+					</pluginOptions>
 				</configuration>
 				<dependencies>
 					<dependency>
