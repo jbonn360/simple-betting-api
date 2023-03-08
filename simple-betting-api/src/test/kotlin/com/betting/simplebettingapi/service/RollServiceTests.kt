@@ -11,24 +11,15 @@ import com.betting.simplebettingapi.repository.BetRepository
 import com.betting.simplebettingapi.repository.RollRepository
 import io.mockk.every
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 
 import io.mockk.mockk
 import io.mockk.verify
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.math.BigDecimal
 import java.time.Instant
 
 //@DataJpaTest
 class RollServiceTests() {
-    //@Autowired
-    //lateinit var entityManager: TestEntityManager
-
     // mock required classes
     private val walletService: WalletService = mockk()
 
@@ -37,34 +28,33 @@ class RollServiceTests() {
 
     private val utils: Utils = mockk()
 
-    // create roll service impl instance with these mocks as parameters
+    // create roll service impl instance - class to be tested
     private lateinit var rollService: RollServiceImpl
 
     @Test
     fun givenWinningCondition_WhenNumberIsRolled_AccountWinsBet() {
+        val numberBetOn: Byte = 5
+
         //given
-        val rollModel = RollModel(Instant.now(), 5)
+        val rollModel = RollModel(Instant.now(), 0)
         val walletModel = WalletModel(BigDecimal.ZERO)
         val accountModel = AccountModel("username", "name", "surname", walletModel)
 
         walletModel.account = accountModel
 
         val betModel = BetModel(
-            BigDecimal(50), 5, BetStatus.PLACED, Instant.now(), rollModel,
+            BigDecimal(50), numberBetOn, BetStatus.PLACED, Instant.now(), rollModel,
             accountModel
         )
 
-        val betModelWon10 = betModel
-        betModelWon10.status = BetStatus.WON_10
-
+        betModel.status = BetStatus.WON_10
         every { rollRepository.save(any()) } returns rollModel
-
         rollService = RollServiceImpl(walletService, rollRepository, betRepository, utils, 1)
 
         //every { rollService.createAndPersistNewRollEntity() } returns rollModel
         every { betRepository.findAllByRoll(any()) } returns listOf(betModel)
-        every { utils.generateRandomNumberRoll() } returns 5
-        every { betRepository.save(betModel) } returns betModelWon10
+        every { utils.generateRandomNumberRoll() } returns numberBetOn
+        every { betRepository.save(betModel) } returns betModel
         every { walletService.updateBalance(any(), any(), any()) } returns mockk()
 
         // when
@@ -72,14 +62,20 @@ class RollServiceTests() {
 
         // then
         // roll entity is updated
-        rollModel.number = 5
-        verify { rollRepository.save(rollModel)}
+        rollModel.number = numberBetOn
+        verify { rollRepository.save(rollModel) }
 
         // bet entity is updated
-        betModel.status = BetStatus.WON_10
-        verify{ betRepository.save(betModel) }
+        verify { betRepository.save(withArg { bet -> assertEquals(BetStatus.WON_10, bet.status) }) }
 
         // balance is updated
-        verify { walletService.updateBalance(walletModel, BigDecimal(500), TransactionType.BET_WIN) }
+        verify {
+            walletService.updateBalance(
+                withArg { assertEquals(walletModel, it) },
+                withArg { assertEquals(BigDecimal(500), it) },
+                withArg { assertEquals(TransactionType.BET_WIN, it) }
+            )
+        }
     }
 }
+
