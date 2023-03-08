@@ -48,7 +48,6 @@ class BetServiceImpl(
     public override fun placeBet(accountId: Int, betDto: BetDto): Int {
         val account = accountRepository.findById(accountId)
 
-        //todo: replace with proper kotlin null handling
         if(account.isEmpty){
             logger.error { "Error occurred while retrieving account with id $accountId to place bet" }
             throw EntityNotFoundException("Account with id $accountId was not found")
