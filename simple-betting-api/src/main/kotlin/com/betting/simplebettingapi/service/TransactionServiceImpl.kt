@@ -15,14 +15,14 @@ class TransactionServiceImpl(
     @Autowired private val walletRepository: WalletRepository
 ) : TransactionService {
 
-    override fun createTransaction(transactionDto: TransactionDto, wallet: WalletModel): TransactionModel {
+    override fun createTransaction(transactionDto: TransactionDto, updatedWallet: WalletModel): TransactionModel {
         val transaction = TransactionModel(
             transactionDto.transactionDt,
             transactionDto.transactionType,
             transactionDto.amount,
-            wallet.balance.subtract(transactionDto.amount),
-            wallet.balance,
-            wallet
+            updatedWallet.balance.subtract(transactionDto.amount),
+            updatedWallet.balance,
+            updatedWallet
         )
 
         val transactionSaved = transactionRepository.save(transaction);

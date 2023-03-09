@@ -25,7 +25,9 @@ class AccountServiceTests() {
     private val accountRepository: AccountRepository = mockk()
     private val walletRepository: WalletRepository = mockk()
 
-    private val accountService = AccountServiceImpl(accountRepository, walletRepository, walletService)
+    private val accountService = AccountServiceImpl(
+        accountRepository, walletRepository, walletService
+    )
 
     @Test
     fun givenAccountId_WhenAccountExists_AccountIsReturned() {

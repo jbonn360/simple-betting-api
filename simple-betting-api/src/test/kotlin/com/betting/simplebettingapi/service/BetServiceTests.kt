@@ -54,7 +54,7 @@ class BetServiceTests {
     fun givenAccountId_WhenAccountExists_ReturnAccountBets() {
         //given
         every {
-            betRepository.findAllByAccountIdOrderByPlacedDtDesc(any())
+            betRepository.findAllByAccountIdOrderByPlacedDtDesc(1)
         } returns listOf(betModel1, betModel2)
 
         //when
