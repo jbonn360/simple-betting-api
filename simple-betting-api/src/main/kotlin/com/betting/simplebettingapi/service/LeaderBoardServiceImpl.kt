@@ -4,6 +4,7 @@ import com.betting.simplebettingapi.dto.LeaderBoardDto
 import com.betting.simplebettingapi.repository.WalletRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.PageRequest
@@ -15,14 +16,15 @@ import java.util.concurrent.TimeUnit
 
 @Service
 class LeaderBoardServiceImpl(
-    @Autowired private val walletRepository: WalletRepository
+    @Autowired private val walletRepository: WalletRepository,
+    @Value("\${app.leaderboard.size}") private val leaderboardSize: Int
 ) : LeaderBoardService {
     private val logger = KotlinLogging.logger {}
 
     @Cacheable(value = ["leaderBoard"])
-    override fun getLeaderBoard(listSize: Int): LeaderBoardDto {
+    override fun getLeaderBoard(): LeaderBoardDto {
         val walletModels =
-            walletRepository.findAllByOrderByBalanceDesc(PageRequest.of(0, listSize))
+            walletRepository.findAllByOrderByBalanceDesc(PageRequest.of(0, leaderboardSize))
 
         val leaderList = ArrayList<LeaderBoardDto.LeaderBoardEntry>()
 

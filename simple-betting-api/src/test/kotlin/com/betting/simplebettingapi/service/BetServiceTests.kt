@@ -75,21 +75,6 @@ class BetServiceTests {
     }
 
     @Test
-    fun givenBetId_WhenBetExists_BetDtoIsReturned() {
-        //given
-        every { betRepository.findById(any()) } returns Optional.of(betModel2)
-
-        //when
-        val betDto = betService.getBetById(1)
-
-        //then
-        assertEquals(betModel2.numberBetOn, betDto.numberBetOn )
-        assertEquals(betModel2.placedDt, betDto.placedDt )
-        assertEquals(betModel2.status, betDto.status )
-        assertEquals(betModel2.roll.number, betDto.roll!!.numberRolled )
-    }
-
-    @Test
     fun givenAccountIdAndBetDto_WhenPlaceBetIsCalled_BetIsPlaced() {
         //given
         val walletModel = WalletModel(BigDecimal(1000))

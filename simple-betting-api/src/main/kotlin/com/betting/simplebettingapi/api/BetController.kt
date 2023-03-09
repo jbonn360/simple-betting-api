@@ -11,19 +11,14 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/v1/bets")
+@RequestMapping("/api/v1")
 class BetController(@Autowired private val betService: BetService) {
-    @GetMapping("/{betId}", produces = ["application/json"])
-    fun handleGet(@PathVariable("betId") betId: Int): ResponseEntity<BetDto> {
-        return ResponseEntity<BetDto>(betService.getBetById(betId), HttpStatus.OK)
-    }
-
-    @GetMapping("/account/{accountId}", produces = ["application/json"])
+    @GetMapping("/account/{accountId}/bets", produces = ["application/json"])
     fun handleGetWithAccountId(@PathVariable("accountId") accountId: Int): ResponseEntity<BetListDto> {
         return ResponseEntity<BetListDto>(betService.getBetsByAccountId(accountId), HttpStatus.OK)
     }
 
-    @PostMapping("/account/{accountId}", consumes = ["application/json"], produces = ["application/json"])
+    @PostMapping("/account/{accountId}/bets", consumes = ["application/json"], produces = ["application/json"])
     fun handlePost(@PathVariable("accountId") accountId: Int, @RequestBody betDto: BetDto):
             ResponseEntity<HttpHeaders> {
         val betId = betService.placeBet(accountId, betDto)

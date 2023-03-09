@@ -34,15 +34,6 @@ class BetServiceImpl(
         return BetListDto(bets)
     }
 
-    override fun getBetById(betId: Int): BetDto {
-        val betModel = betRepository.findById(betId)
-
-        if (betModel.isPresent)
-            return Utils.mapBetModelToDto(betModel.get())
-        else
-            throw EntityNotFoundException("Bet object with id $betId was not found")
-    }
-
     @Throws(EntityNotFoundException::class, InsufficientCreditsException::class)
     @Transactional
     public override fun placeBet(accountId: Int, betDto: BetDto): Int {

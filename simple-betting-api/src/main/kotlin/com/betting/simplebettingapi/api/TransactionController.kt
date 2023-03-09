@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/transactions")
+@RequestMapping("/api/v1")
 class TransactionController(@Autowired private val transactionService: TransactionService) {
-    @GetMapping("/account/{accountId}", produces = ["application/json"])
+    @GetMapping("/account/{accountId}/transactions", produces = ["application/json"])
     fun handleGet (@PathVariable("accountId") accountId: Int): ResponseEntity<TransactionListDto> {
         return ResponseEntity<TransactionListDto>(
             transactionService.getTransactionsByAccountId(accountId), HttpStatus.OK
