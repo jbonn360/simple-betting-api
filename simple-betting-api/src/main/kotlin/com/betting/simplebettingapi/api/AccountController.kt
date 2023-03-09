@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Mono
 import javax.validation.Valid
 
 
@@ -19,17 +20,17 @@ import javax.validation.Valid
 @RequestMapping("/api/v1/account")
 class AccountController(@Autowired private val accountService: AccountService) {
     @GetMapping("/{id}", produces = ["application/json"])
-    fun getAccountById (@PathVariable("id") id: Int): ResponseEntity<AccountDto>{
-        return ResponseEntity<AccountDto>(accountService.getAccountById(id), HttpStatus.OK)
+    fun getAccountById (@PathVariable("id") id: Int): Mono<AccountDto> {
+        return Mono.just(accountService.getAccountById(id))
     }
 
     @PostMapping(consumes = ["application/json"])
-    fun createNewAccount (@Valid @RequestBody accountDto: AccountDto): ResponseEntity<HttpHeaders> {
+    fun createNewAccount (@Valid @RequestBody accountDto: AccountDto): Mono<ResponseEntity<HttpHeaders>> {
         val accountId: Int = accountService.createAccount(accountDto)
 
         val httpHeaders = HttpHeaders()
         httpHeaders.add("Location", "/api/v1/account/${accountId}")
 
-        return ResponseEntity<HttpHeaders>(httpHeaders, HttpStatus.CREATED)
+        return Mono.just(ResponseEntity<HttpHeaders>(httpHeaders, HttpStatus.CREATED))
     }
 }
