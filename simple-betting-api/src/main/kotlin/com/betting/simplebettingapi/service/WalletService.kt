@@ -8,5 +8,5 @@ import java.math.BigDecimal
 interface WalletService {
     fun updateBalance(wallet: WalletModel, newBalance: BigDecimal, transactionType: TransactionType): TransactionModel
 
-    fun getWalletByAccountId(accountId: Int): WalletModel
+    fun getWalletByAccountId(accountId: Long): WalletModel
 }

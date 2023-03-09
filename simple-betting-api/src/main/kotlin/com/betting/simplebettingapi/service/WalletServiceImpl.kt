@@ -1,7 +1,6 @@
 package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.TransactionDto
-import com.betting.simplebettingapi.exception.EntityNotFoundException
 import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.exception.InvalidTransactionException
 import com.betting.simplebettingapi.helpers.TransactionType
@@ -31,40 +30,32 @@ class WalletServiceImpl(
      */
     @Throws(InsufficientCreditsException::class, InvalidTransactionException::class)
     @Transactional
-    override fun updateBalance(wallet: WalletModel, newBalance: BigDecimal, transactionType: TransactionType): TransactionModel {
+    override fun updateBalance(
+        wallet: WalletModel,
+        newBalance: BigDecimal,
+        transactionType: TransactionType
+    ): TransactionModel {
         val transactionAmount = newBalance - wallet.balance
-        val walletUpdated: WalletModel
 
         if (newBalance < BigDecimal.ZERO) // if new balance is less than zero
-            throw InsufficientCreditsException("Cannot set wallet balance to $newBalance. " +
-                    "Transaction has been rolled back.")
+            throw InsufficientCreditsException(
+                "Cannot set wallet balance to $newBalance. " +
+                        "Transaction has been rolled back."
+            )
         else if (newBalance == wallet.balance) // if transaction amount is zero
             throw InvalidTransactionException("Cannot have a transaction with amount set to 0")
         else {
             // update credits in wallet
             wallet.balance = newBalance
-            walletUpdated = walletRepository.save(wallet)
-        }
-
-        if (walletUpdated == null) {
-            logger.error { "Error occurred while updating the wallet's balance" }
-            throw Exception("Failed to update wallet in database")
         }
 
         // saving the transaction
-        val transaction = transactionService.createTransaction(
+        return transactionService.createTransaction(
             TransactionDto(Instant.now(), transactionType, transactionAmount), wallet
-        )
-
-        if (transaction == null) {
-            logger.error { "Error occurred while persisting the transaction record in the database" }
-            throw Exception("Failed to persist transaction record in database")
-        }
-
-        return transaction;
+        );
     }
 
-    override fun getWalletByAccountId(accountId: Int): WalletModel {
+    override fun getWalletByAccountId(accountId: Long): WalletModel {
         return walletRepository.findByAccountId(accountId)
     }
 

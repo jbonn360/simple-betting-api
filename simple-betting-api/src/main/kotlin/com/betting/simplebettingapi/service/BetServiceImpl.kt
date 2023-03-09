@@ -24,7 +24,7 @@ class BetServiceImpl(
     @Autowired private val accountRepository: AccountRepository,
 ) : BetService {
     private val logger = KotlinLogging.logger {}
-    override fun getBetsByAccountId(accountId: Int): BetListDto {
+    override fun getBetsByAccountId(accountId: Long): BetListDto {
         val betModels = betRepository.findAllByAccountIdOrderByPlacedDtDesc(accountId)
         val bets = ArrayList<BetDto>()
 
@@ -36,7 +36,7 @@ class BetServiceImpl(
 
     @Throws(EntityNotFoundException::class, InsufficientCreditsException::class)
     @Transactional
-    public override fun placeBet(accountId: Int, betDto: BetDto): Int {
+    override fun placeBet(accountId: Long, betDto: BetDto): Long {
         val account = accountRepository.findById(accountId)
 
         if(account.isEmpty){

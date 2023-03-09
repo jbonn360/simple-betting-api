@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 interface AccountService {
-    fun getAccountById(id: Int) : AccountDto
+    fun getAccountById(id: Long) : AccountDto
 
-    fun createAccount(accountDto: AccountDto): Int
+    fun createAccount(accountDto: AccountDto): Long
 
 }

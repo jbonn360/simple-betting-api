@@ -27,7 +27,7 @@ class RollServiceImpl(
     private var currentRoll: RollModel = createAndPersistNewRollEntity()
     private val logger = KotlinLogging.logger {}
 
-    final fun createAndPersistNewRollEntity(): RollModel {
+    private final fun createAndPersistNewRollEntity(): RollModel {
         val roll = RollModel(Instant.now().plus(rollInterval.toLong(), ChronoUnit.MINUTES))
         return rollRepository.save(roll)
     }

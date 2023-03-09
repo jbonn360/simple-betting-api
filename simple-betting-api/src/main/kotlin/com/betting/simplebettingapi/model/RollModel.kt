@@ -9,8 +9,14 @@ import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 
 @Entity
-class RollModel(var rollDt: Instant, @field:Min(0) @field:Max(10) var number: Byte = 0) {
+class RollModel(
+    var rollDt: Instant,
+
+    @field:Min(0)
+    @field:Max(10)
+    var number: Byte = 0
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id = -1
+    val id: Long = -1
 }

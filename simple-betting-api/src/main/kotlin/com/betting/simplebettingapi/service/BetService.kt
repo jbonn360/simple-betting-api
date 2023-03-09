@@ -4,6 +4,6 @@ import com.betting.simplebettingapi.dto.BetDto
 import com.betting.simplebettingapi.dto.BetListDto
 
 interface BetService {
-    fun getBetsByAccountId(accountId: Int): BetListDto
-    fun placeBet(accountId: Int, betDto: BetDto): Int
+    fun getBetsByAccountId(accountId: Long): BetListDto
+    fun placeBet(accountId: Long, betDto: BetDto): Long
 }

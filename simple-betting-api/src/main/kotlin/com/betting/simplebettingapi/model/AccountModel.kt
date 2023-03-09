@@ -11,10 +11,17 @@ import javax.validation.constraints.NotNull
 
 @Entity
 class AccountModel(
-    @Column(unique = true) val username: String, val name: String, val surname: String,
-    @OneToOne val wallet: WalletModel
+    @Column(unique = true)
+    val username: String,
+
+    val name: String,
+
+    val surname: String,
+
+    @OneToOne
+    val wallet: WalletModel
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id = -1;
+    val id: Long = -1;
 }

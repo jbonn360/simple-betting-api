@@ -13,10 +13,20 @@ import javax.validation.constraints.PositiveOrZero
 
 
 class BetDto(
-    @field:Positive val betAmount: BigDecimal,
-    @field:Min(1) @field:Max(10) val numberBetOn: Byte,
-    @field:PositiveOrZero @field:JsonInclude(Include.NON_NULL) val amountWon: BigDecimal?,
+    @field:Positive
+    val betAmount: BigDecimal,
+
+    @field:Min(1)
+    @field:Max(10)
+    val numberBetOn: Byte,
+
+    @field:PositiveOrZero
+    @field:JsonInclude(Include.NON_NULL)
+    val amountWon: BigDecimal?,
+
     val status: BetStatus = BetStatus.PLACED,
+
     val placedDt: Instant = Instant.MIN,
+
     val roll: RollDto?,
 )

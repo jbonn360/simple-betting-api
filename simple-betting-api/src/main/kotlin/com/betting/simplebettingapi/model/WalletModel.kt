@@ -6,10 +6,13 @@ import javax.validation.constraints.PositiveOrZero
 
 @Entity
 class WalletModel(
-    @field:PositiveOrZero var balance: BigDecimal,
-    @OneToOne var account: AccountModel? = null
+    @field:PositiveOrZero
+    var balance: BigDecimal,
+
+    @OneToOne
+    var account: AccountModel? = null
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id = -1;
+    val id: Long = -1;
 }

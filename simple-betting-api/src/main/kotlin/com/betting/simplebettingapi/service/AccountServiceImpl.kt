@@ -23,7 +23,7 @@ class AccountServiceImpl(
 ) : AccountService {
     private val logger = KotlinLogging.logger {}
 
-    override fun getAccountById(id: Int): AccountDto {
+    override fun getAccountById(id: Long): AccountDto {
         val accountModel = accountRepository.findById(id)
 
         if(accountModel.isEmpty) throw EntityNotFoundException("Account with id $id does not exist")
@@ -40,7 +40,7 @@ class AccountServiceImpl(
     }
 
     @Transactional
-    override fun createAccount(accountDto: AccountDto): Int {
+    override fun createAccount(accountDto: AccountDto): Long {
         // creating and saving wallet
         val wallet = WalletModel(BigDecimal(0))
         val walletSaved = walletRepository.save(wallet)

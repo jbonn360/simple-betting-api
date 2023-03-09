@@ -30,7 +30,7 @@ class TransactionServiceImpl(
         return transactionSaved;
     }
 
-    override fun getTransactionsByAccountId(accountId: Int): TransactionListDto {
+    override fun getTransactionsByAccountId(accountId: Long): TransactionListDto {
         val wallet = walletRepository.findByAccountId(accountId)
         val transactionModels = transactionRepository.findAllByWalletOrderByTransactionDtDesc(wallet)
         val transactions = ArrayList<TransactionDto>()

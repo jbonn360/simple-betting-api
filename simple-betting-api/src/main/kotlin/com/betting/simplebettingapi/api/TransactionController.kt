@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1")
 class TransactionController(@Autowired private val transactionService: TransactionService) {
     @GetMapping("/account/{accountId}/transactions", produces = ["application/json"])
-    fun handleGet (@PathVariable("accountId") accountId: Int): ResponseEntity<TransactionListDto> {
+    fun handleGet (@PathVariable("accountId") accountId: Long): ResponseEntity<TransactionListDto> {
         return ResponseEntity<TransactionListDto>(
             transactionService.getTransactionsByAccountId(accountId), HttpStatus.OK
         )
