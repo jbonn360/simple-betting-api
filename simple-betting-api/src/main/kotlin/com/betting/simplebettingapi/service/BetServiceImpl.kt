@@ -34,17 +34,26 @@ class BetServiceImpl(
         return BetListDto(bets)
     }
 
+    override fun getBetByBetId(betId: Long): BetDto {
+        val betModel = betRepository.findById(betId).orElseThrow {
+            EntityNotFoundException("Bet with id $betId was not found")
+        }
+
+        //mapping bet model to bet dto
+        return Utils.mapBetModelToDto(betModel)
+    }
+
     @Throws(EntityNotFoundException::class, InsufficientCreditsException::class)
     @Transactional
     override fun placeBet(accountId: Long, betDto: BetDto): Long {
         val account = accountRepository.findById(accountId)
 
-        if(account.isEmpty){
+        if (account.isEmpty) {
             logger.error { "Error occurred while retrieving account with id $accountId to place bet" }
             throw EntityNotFoundException("Account with id $accountId was not found")
         }
 
-        if(account.get().wallet.balance < betDto.betAmount)
+        if (account.get().wallet.balance < betDto.betAmount)
             throw InsufficientCreditsException("Bet placement failed due to insufficient credits")
 
         val bet = BetModel(
