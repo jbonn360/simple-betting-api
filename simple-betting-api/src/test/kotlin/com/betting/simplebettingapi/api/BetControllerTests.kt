@@ -22,11 +22,11 @@ import java.time.temporal.ChronoUnit
 
 @WebMvcTest(controllers = [BetController::class])
 class BetControllerTests(
-    @Autowired private val mapper: ObjectMapper
-) {
     @Autowired
-    private lateinit var mockMvc: MockMvc
-
+    private val mockMvc: MockMvc,
+    @Autowired
+    private val mapper: ObjectMapper
+) {
     @MockkBean
     private lateinit var betService: BetService
 
