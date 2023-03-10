@@ -1,5 +1,6 @@
 package com.betting.simplebettingapi.service
 
+import com.betting.simplebettingapi.dto.RollDto
 import com.betting.simplebettingapi.helpers.BetStatus
 import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.helpers.Utils
@@ -34,6 +35,10 @@ class RollServiceImpl(
 
     override fun getCurrentRoll(): RollModel {
         return currentRoll
+    }
+
+    override fun getCurrentRollDto(): RollDto {
+        return RollDto(currentRoll.rollDt, null)
     }
 
     // roll a new number every x minutes
