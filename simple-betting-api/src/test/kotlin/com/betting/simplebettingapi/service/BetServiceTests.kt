@@ -1,6 +1,7 @@
 package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.BetDto
+import com.betting.simplebettingapi.exception.EntityNotFoundException
 import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.helpers.BetStatus
 import com.betting.simplebettingapi.helpers.TransactionType
@@ -61,7 +62,7 @@ class BetServiceTests {
             betRepository.findAllByAccountIdOrderByPlacedDtDesc(accountId)
         } returns listOf(betModel1, betModel2)
 
-        every{
+        every {
             accountRepository.findById(accountId)
         } returns Optional.of(mockk())
 
@@ -83,6 +84,56 @@ class BetServiceTests {
     }
 
     @Test
+    fun givenAccountId_WhenAccountDoesNotExist_ReturnError() {
+        val accountId: Long = 1
+
+        //given
+        every {
+            accountRepository.findById(accountId)
+        } returns Optional.empty()
+
+        //when
+        assertThrows<EntityNotFoundException> { betService.getBetsByAccountId(accountId) }
+
+        // then
+        verify(exactly = 0) {
+            betRepository.findById(any())
+        }
+    }
+
+    @Test
+    fun givenAccountIdAndBetId_WhenAccountDoesNotExist_ReturnError() {
+        val accountId: Long = 1
+        val betId: Long = 1
+
+        //given
+        every {
+            accountRepository.findById(accountId)
+        } returns Optional.empty()
+
+        //when / then
+        assertThrows<EntityNotFoundException> { betService.getBetByAccountIdAndBetId(accountId, betId) }
+    }
+
+    @Test
+    fun givenAccountIdAndBetId_WhenAccountExistsButBetDoesNot_ThenReturnError() {
+        val accountId: Long = 1
+        val betId: Long = 1
+
+        //given
+        every {
+            accountRepository.findById(accountId)
+        } returns Optional.of(mockk())
+
+        every {
+            betRepository.findById(betId)
+        } returns Optional.empty()
+
+        //when / then
+        assertThrows<EntityNotFoundException> { betService.getBetByAccountIdAndBetId(accountId, betId) }
+    }
+
+    @Test
     fun givenAccountIdAndBetDto_WhenPlaceBetIsCalled_BetIsPlaced() {
         //given
         val walletModel = WalletModel(BigDecimal(1000))
@@ -93,8 +144,8 @@ class BetServiceTests {
         val betDto = BetDto(
             betModel1.amount,
             betModel1.numberBetOn,
-            null,
-            BetStatus.PLACED,
+            BigDecimal(Int.MAX_VALUE),
+            BetStatus.WON_10,
             betModel1.placedDt,
             mockk()
         )
@@ -128,7 +179,6 @@ class BetServiceTests {
                 assertEquals(TransactionType.BET_PLACEMENT, it)
             })
         }
-
     }
 
     @Test
@@ -154,7 +204,7 @@ class BetServiceTests {
         every { walletService.updateBalance(any(), any(), any()) } returns mockk()
 
         //when
-        assertThrows<InsufficientCreditsException> { betService.placeBet(1, betDto)  }
+        assertThrows<InsufficientCreditsException> { betService.placeBet(1, betDto) }
 
         //then
         verify(exactly = 0) {
@@ -162,4 +212,6 @@ class BetServiceTests {
             walletService.updateBalance(any(), any(), any())
         }
     }
+
+
 }

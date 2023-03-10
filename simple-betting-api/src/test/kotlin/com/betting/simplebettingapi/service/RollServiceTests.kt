@@ -3,13 +3,13 @@ package com.betting.simplebettingapi.service
 import com.betting.simplebettingapi.helpers.BetStatus
 import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.helpers.Utils
+import com.betting.simplebettingapi.helpers.UtilsTests
 import com.betting.simplebettingapi.model.AccountModel
 import com.betting.simplebettingapi.model.BetModel
 import com.betting.simplebettingapi.model.RollModel
 import com.betting.simplebettingapi.model.WalletModel
 import com.betting.simplebettingapi.repository.BetRepository
 import com.betting.simplebettingapi.repository.RollRepository
-import io.mockk.called
 import io.mockk.every
 import org.junit.jupiter.api.Test
 
@@ -18,7 +18,6 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.math.BigDecimal
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 class RollServiceTests() {
     // mock required classes
