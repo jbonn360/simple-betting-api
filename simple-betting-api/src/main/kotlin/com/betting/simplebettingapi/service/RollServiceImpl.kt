@@ -45,6 +45,7 @@ class RollServiceImpl(
     fun rollNextNumber() {
         //1. if there are no bets on current roll, postpone the roll
         val bets = betRepository.findAllByRoll(this.currentRoll)
+
         if (bets.isEmpty()) {
             logger.info { "No bets found, postponing roll..." }
             currentRoll = postponeRoll(currentRoll, rollInterval.toLong())

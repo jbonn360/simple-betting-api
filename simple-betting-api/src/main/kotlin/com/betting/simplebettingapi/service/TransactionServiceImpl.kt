@@ -2,6 +2,7 @@ package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.TransactionDto
 import com.betting.simplebettingapi.dto.TransactionListDto
+import com.betting.simplebettingapi.exception.EntityNotFoundException
 import com.betting.simplebettingapi.model.TransactionModel
 import com.betting.simplebettingapi.model.WalletModel
 import com.betting.simplebettingapi.repository.TransactionRepository
@@ -31,7 +32,10 @@ class TransactionServiceImpl(
     }
 
     override fun getTransactionsByAccountId(accountId: Long): TransactionListDto {
-        val wallet = walletRepository.findByAccountId(accountId)
+        val wallet = walletRepository.findByAccountId(accountId).orElseThrow{
+            EntityNotFoundException("Account with id $accountId was not found")
+        }
+
         val transactionModels = transactionRepository.findAllByWalletOrderByTransactionDtDesc(wallet)
         val transactions = ArrayList<TransactionDto>()
 

@@ -1,8 +1,8 @@
 package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.LeaderBoardDto
-import org.springframework.data.repository.CrudRepository
+import reactor.core.publisher.Mono
 
 interface LeaderBoardService {
-    fun getLeaderBoard(): LeaderBoardDto
+    fun getLeaderBoard(): Mono<LeaderBoardDto>
 }

@@ -6,6 +6,6 @@ import com.betting.simplebettingapi.model.TransactionModel
 import com.betting.simplebettingapi.model.WalletModel
 
 interface TransactionService {
-    fun createTransaction(transactionDto: TransactionDto, wallet: WalletModel): TransactionModel
+    fun createTransaction(transactionDto: TransactionDto, updatedWallet: WalletModel): TransactionModel
     fun getTransactionsByAccountId(accountId: Long): TransactionListDto
 }

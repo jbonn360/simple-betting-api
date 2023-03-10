@@ -24,18 +24,16 @@ class AccountServiceImpl(
     private val logger = KotlinLogging.logger {}
 
     override fun getAccountById(id: Long): AccountDto {
-        val accountModel = accountRepository.findById(id)
-
-        if(accountModel.isEmpty) throw EntityNotFoundException("Account with id $id does not exist")
-
-        val account = accountModel.get()
+        val accountModel = accountRepository.findById(id).orElseThrow{
+            EntityNotFoundException("Account with id $id was not found")
+        }
 
         return AccountDto(
-            account.id,
-            account.username,
-            account.name,
-            account.surname,
-            WalletDto(account.wallet.balance)
+            accountModel.id,
+            accountModel.username,
+            accountModel.name,
+            accountModel.surname,
+            WalletDto(accountModel.wallet.balance)
         )
     }
 

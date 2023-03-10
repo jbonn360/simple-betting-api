@@ -1,6 +1,7 @@
 package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.TransactionDto
+import com.betting.simplebettingapi.exception.EntityNotFoundException
 import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.exception.InvalidTransactionException
 import com.betting.simplebettingapi.helpers.TransactionType
@@ -56,7 +57,9 @@ class WalletServiceImpl(
     }
 
     override fun getWalletByAccountId(accountId: Long): WalletModel {
-        return walletRepository.findByAccountId(accountId)
+        return walletRepository.findByAccountId(accountId).orElseThrow{
+            EntityNotFoundException("Account with id $accountId was not found")
+        }
     }
 
 }

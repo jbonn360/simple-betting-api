@@ -18,7 +18,12 @@ class BetController(@Autowired private val betService: BetService) {
         @PathVariable("accountId") accountId: Long,
         @PathVariable("betId") betId: Long
     ): ResponseEntity<BetDto> {
-        return ResponseEntity<BetDto>(betService.getBetByBetId(betId), HttpStatus.OK)
+        return ResponseEntity<BetDto>(
+            betService.getBetByAccountIdAndBetId(
+                accountId,
+                betId
+            ), HttpStatus.OK
+        )
     }
 
     @GetMapping("/account/{accountId}/bets", produces = ["application/json"])
