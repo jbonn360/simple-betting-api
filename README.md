@@ -4,6 +4,9 @@ This is a simple API that can be used to create an account, place bets, and play
 multiplayer game that allows multiple clients connected to the server to place a bet on the same outcome, referred to
 as a roll.
 
+By default, a new number is rolled every one minute if there's at least one bet associated with the current roll. If no bets
+are found, the roll is postponed.
+
 ## Requirements
 JRE 11+
 
