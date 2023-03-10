@@ -3,15 +3,18 @@ package com.betting.simplebettingapi.api
 import com.betting.simplebettingapi.dto.BetDto
 import com.betting.simplebettingapi.dto.BetListDto
 import com.betting.simplebettingapi.dto.RollDto
+import com.betting.simplebettingapi.exception.InsufficientCreditsException
+import com.betting.simplebettingapi.exception.InvalidTransactionException
 import com.betting.simplebettingapi.helpers.BetStatus
 import com.betting.simplebettingapi.service.BetService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.called
 import io.mockk.every
+import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -110,6 +113,114 @@ class BetControllerTests(
         }.andExpect {
             status { isCreated() }
             header { string("Location", "/api/v1/account/$accountId/bets/$betId") }
+        }
+    }
+
+    @Test
+    fun givenInvalidAmountBetDtoAndAccountId_whenAccountExists_thenReturnError() {
+        //given
+        val accountId: Long = 1
+
+        val betWithNegativeAmount = BetDto(
+            BigDecimal(-100),
+            1,
+            null,
+            BetStatus.PLACED,
+            Instant.now(),
+            rollDto
+        )
+
+        //when / then
+        mockMvc.post("/api/v1/account/$accountId/bets") {
+            contentType = MediaType.APPLICATION_JSON
+            content = mapper.writeValueAsString(betWithNegativeAmount)
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isBadRequest() }
+        }
+    }
+
+    @Test
+    fun givenInvalidNumberBetDtoAndAccountId_whenAccountExists_thenReturnError() {
+        //given
+        val accountId: Long = 1
+
+        val betWithInvalidAmountBetOn = BetDto(
+            BigDecimal(100),
+            0,
+            null,
+            BetStatus.PLACED,
+            Instant.now(),
+            rollDto
+        )
+
+        //when / then
+        mockMvc.post("/api/v1/account/$accountId/bets") {
+            contentType = MediaType.APPLICATION_JSON
+            content = mapper.writeValueAsString(betWithInvalidAmountBetOn)
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isBadRequest() }
+        }
+    }
+
+    @Test
+    fun givenBetDtoWithPlacedDtInFutureAndAccountId_whenAccountExists_thenReturnError() {
+        //given
+        val accountId: Long = 1
+
+        val betWithInvalidAmountBetOn = BetDto(
+            BigDecimal(100),
+            1,
+            null,
+            BetStatus.PLACED,
+            Instant.now().plus(1, ChronoUnit.HOURS),
+            rollDto
+        )
+
+        //when / then
+        mockMvc.post("/api/v1/account/$accountId/bets") {
+            contentType = MediaType.APPLICATION_JSON
+            content = mapper.writeValueAsString(betWithInvalidAmountBetOn)
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isBadRequest() }
+        }
+    }
+
+    @Test
+    fun givenBetDtoAndAccountId_whenAccountNotEnoughCredits_thenReturnError() {
+        //given
+        val accountId: Long = 1
+
+        every { betService.placeBet(accountId, any()) } throws
+                InsufficientCreditsException("Insufficient credits")
+
+        //when / then
+        mockMvc.post("/api/v1/account/$accountId/bets") {
+            contentType = MediaType.APPLICATION_JSON
+            content = mapper.writeValueAsString(betDto1)
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isBadRequest() }
+        }
+    }
+
+    @Test
+    fun givenBetDtoAndAccountId_whenInvalidTransaction_thenReturnError() {
+        //given
+        val accountId: Long = 1
+
+        every { betService.placeBet(accountId, any()) } throws
+                InvalidTransactionException("Invalid transaction")
+
+        //when / then
+        mockMvc.post("/api/v1/account/$accountId/bets") {
+            contentType = MediaType.APPLICATION_JSON
+            content = mapper.writeValueAsString(betDto1)
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isBadRequest() }
         }
     }
 }

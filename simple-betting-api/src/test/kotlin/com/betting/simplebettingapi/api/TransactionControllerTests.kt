@@ -18,7 +18,7 @@ import java.math.BigDecimal
 import java.time.Instant
 
 @WebMvcTest(controllers = [TransactionController::class])
-class TransactionControllerTests (
+class TransactionControllerTests(
     @Autowired
     private val mockMvc: MockMvc,
     @Autowired
@@ -28,7 +28,7 @@ class TransactionControllerTests (
     private lateinit var transactionService: TransactionService
 
     @Test
-    fun givenAccountId_WhenAccountExists_ThenReturnTransactionList(){
+    fun givenAccountId_WhenAccountExists_ThenReturnTransactionList() {
         //given
         val accountId: Long = 1
 
@@ -40,18 +40,31 @@ class TransactionControllerTests (
             BigDecimal(161)
         )
 
-        val transactionDto2 = TransactionDto(
-            Instant.now(),
-            TransactionType.BET_PLACEMENT,
-            BigDecimal(-200),
-            BigDecimal(500),
-            BigDecimal(300)
-        )
-
         val transactionListDto = TransactionListDto(listOf(transactionDto1, transactionDto1))
         val transactionListDtoStr = mapper.writeValueAsString(transactionListDto)
 
-        every{ transactionService.getTransactionsByAccountId(accountId) } returns transactionListDto
+        every { transactionService.getTransactionsByAccountId(accountId) } returns transactionListDto
+
+        //when / then
+        mockMvc.get("/api/v1/account/$accountId/transactions") {
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+            content { json(transactionListDtoStr) }
+        }
+    }
+
+    @Test
+    fun givenAccountId_WhenNoTransactionsFound_ThenReturnEmptyList() {
+        //given
+        val accountId: Long = 1
+        val transactionList = TransactionListDto(emptyList())
+
+        every { transactionService.getTransactionsByAccountId(accountId) } returns
+                transactionList
+
+        val transactionListDtoStr = mapper.writeValueAsString(transactionList)
 
         //when / then
         mockMvc.get("/api/v1/account/$accountId/transactions") {

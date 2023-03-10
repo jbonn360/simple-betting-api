@@ -1,6 +1,7 @@
 package com.betting.simplebettingapi.service
 
 import com.betting.simplebettingapi.dto.BetDto
+import com.betting.simplebettingapi.exception.InsufficientCreditsException
 import com.betting.simplebettingapi.helpers.BetStatus
 import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.model.AccountModel
@@ -14,6 +15,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -127,5 +129,37 @@ class BetServiceTests {
             })
         }
 
+    }
+
+    @Test
+    fun givenAccountIdAndBetDto_WhenAccountCreditsTooLow_ThenErrorIsThrown() {
+        //given
+        val walletModel = WalletModel(BigDecimal.ZERO)
+        val accountModel: AccountModel =
+            AccountModel("username", "name", "surname", walletModel)
+        walletModel.account = accountModel
+
+        val betDto = BetDto(
+            BigDecimal(100),
+            betModel1.numberBetOn,
+            null,
+            BetStatus.PLACED,
+            betModel1.placedDt,
+            mockk()
+        )
+
+        every { accountRepository.findById(any()) } returns Optional.of(accountModel)
+        every { betRepository.save(any()) } returns betModel1
+        every { rollService.getCurrentRoll() } returns mockk()
+        every { walletService.updateBalance(any(), any(), any()) } returns mockk()
+
+        //when
+        assertThrows<InsufficientCreditsException> { betService.placeBet(1, betDto)  }
+
+        //then
+        verify(exactly = 0) {
+            betRepository.save(any())
+            walletService.updateBalance(any(), any(), any())
+        }
     }
 }

@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import java.math.BigDecimal
 import java.time.Instant
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.Positive
-import javax.validation.constraints.PositiveOrZero
+import javax.validation.constraints.*
 
 
 class BetDto(
@@ -26,6 +23,7 @@ class BetDto(
 
     val status: BetStatus = BetStatus.PLACED,
 
+    @field:Past
     val placedDt: Instant = Instant.MIN,
 
     val roll: RollDto?,

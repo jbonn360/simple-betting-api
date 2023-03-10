@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/v1")
@@ -32,7 +33,7 @@ class BetController(@Autowired private val betService: BetService) {
     }
 
     @PostMapping("/account/{accountId}/bets", consumes = ["application/json"])
-    fun handlePost(@PathVariable("accountId") accountId: Long, @RequestBody betDto: BetDto):
+    fun handlePost(@PathVariable("accountId") accountId: Long, @Valid @RequestBody betDto: BetDto):
             ResponseEntity<HttpHeaders> {
         val betId = betService.placeBet(accountId, betDto)
 

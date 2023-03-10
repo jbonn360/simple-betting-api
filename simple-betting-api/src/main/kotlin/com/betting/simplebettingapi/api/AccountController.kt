@@ -23,7 +23,7 @@ class AccountController(@Autowired private val accountService: AccountService) {
         return accountService.getAccountById(id)
     }
 
-    @PostMapping(consumes = ["application/json"])
+    @PostMapping(consumes = ["application/json"], produces = ["application/json"])
     fun createNewAccount (@Valid @RequestBody accountDto: AccountDto): ResponseEntity<HttpHeaders> {
         val accountId: Long = accountService.createAccount(accountDto)
 
