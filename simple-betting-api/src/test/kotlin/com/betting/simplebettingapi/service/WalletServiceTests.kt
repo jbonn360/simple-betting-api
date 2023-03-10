@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 import java.time.Instant
+import java.util.*
 
 class WalletServiceTests {
 
@@ -26,7 +27,7 @@ class WalletServiceTests {
         //given
         val walletModel = WalletModel(BigDecimal(100))
 
-        every { walletRepository.findByAccountId(1) } returns walletModel
+        every { walletRepository.findByAccountId(1) } returns Optional.of(walletModel)
 
         //when
         val walletModelReturned = walletService.getWalletByAccountId(1)

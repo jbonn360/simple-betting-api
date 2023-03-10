@@ -15,18 +15,22 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Value
 import java.math.BigDecimal
 import java.util.*
 
-class AccountServiceTests() {
+class AccountServiceTests(
+) {
 
     private val walletService: WalletService = mockk()
 
     private val accountRepository: AccountRepository = mockk()
     private val walletRepository: WalletRepository = mockk()
 
+    private val startingCredits = BigDecimal(1000)
+
     private val accountService = AccountServiceImpl(
-        accountRepository, walletRepository, walletService
+        accountRepository, walletRepository, walletService, startingCredits
     )
 
     @Test
@@ -96,7 +100,7 @@ class AccountServiceTests() {
             })
         }
 
-        verify{
+        verify {
             walletRepository.save(withArg {
                 assertEquals(walletModel, it)
             })
@@ -107,7 +111,7 @@ class AccountServiceTests() {
                 assertEquals(walletModel, it)
                 assertEquals(accountModel, it.account)
             }, withArg {
-                assertEquals(BigDecimal(1000), it)
+                assertEquals(startingCredits, it)
             }, withArg {
                 assertEquals(TransactionType.INITIAL_DEPOSIT, it)
             })

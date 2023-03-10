@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.Instant
+import java.util.*
 
 class TransactionServiceTests {
     // mock dependencies
@@ -87,7 +88,7 @@ class TransactionServiceTests {
             walletModel
         )
 
-        every{ walletRepository.findByAccountId(1) } returns walletModel
+        every{ walletRepository.findByAccountId(1) } returns Optional.of(walletModel)
         every {
             transactionRepository.findAllByWalletOrderByTransactionDtDesc(walletModel)
         } returns listOf(transactionModel1, transactionModel2)

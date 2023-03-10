@@ -57,7 +57,7 @@ class BetControllerTests(
         val betId: Long = 1
 
         every {
-            betService.getBetByBetId(betId)
+            betService.getBetByAccountIdAndBetId(accountId, betId)
         } returns betDto2
 
         val betDtoStr = mapper.writeValueAsString(betDto2)

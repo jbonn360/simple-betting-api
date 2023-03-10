@@ -52,13 +52,19 @@ class BetServiceTests {
 
     @Test
     fun givenAccountId_WhenAccountExists_ReturnAccountBets() {
+        val accountId: Long = 1
+
         //given
         every {
-            betRepository.findAllByAccountIdOrderByPlacedDtDesc(1)
+            betRepository.findAllByAccountIdOrderByPlacedDtDesc(accountId)
         } returns listOf(betModel1, betModel2)
 
+        every{
+            accountRepository.findById(accountId)
+        } returns Optional.of(mockk())
+
         //when
-        val betListDto = betService.getBetsByAccountId(1)
+        val betListDto = betService.getBetsByAccountId(accountId)
 
         //then
         assertEquals(2, betListDto.bets.size)
