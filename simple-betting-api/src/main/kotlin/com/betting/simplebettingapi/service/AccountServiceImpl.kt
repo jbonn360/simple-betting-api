@@ -14,12 +14,14 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 import mu.KotlinLogging
+import org.springframework.beans.factory.annotation.Value
 
 @Service
 class AccountServiceImpl(
     @Autowired private val accountRepository: AccountRepository,
     @Autowired private val walletRepository: WalletRepository,
-    @Autowired private val walletService: WalletService
+    @Autowired private val walletService: WalletService,
+    @Value("\${app.wallet.initial-credits}") private val initialCredits: BigDecimal
 ) : AccountService {
     private val logger = KotlinLogging.logger {}
 
@@ -52,7 +54,7 @@ class AccountServiceImpl(
         walletRepository.save(walletSaved)
 
         // adding initial funds to wallet
-        walletService.updateBalance(walletSaved, BigDecimal(1000), TransactionType.INITIAL_DEPOSIT)
+        walletService.updateBalance(walletSaved, initialCredits, TransactionType.INITIAL_DEPOSIT)
 
         return accountSaved.id
     }
