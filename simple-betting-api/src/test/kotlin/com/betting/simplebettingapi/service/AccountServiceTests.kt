@@ -86,6 +86,7 @@ class AccountServiceTests(
         every { walletRepository.save(any()) } returns walletModel
         every { accountRepository.save(any()) } returns accountModel
         every { walletService.updateBalance(any(), any(), any()) } returns mockk()
+        every { accountRepository.findByUsername(any()) } returns Optional.empty()
 
         //when
         accountService.createAccount(accountDto)

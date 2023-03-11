@@ -3,6 +3,7 @@ package com.betting.simplebettingapi.service
 import com.betting.simplebettingapi.dto.AccountDto
 import com.betting.simplebettingapi.dto.WalletDto
 import com.betting.simplebettingapi.exception.EntityNotFoundException
+import com.betting.simplebettingapi.exception.UsernameTakenException
 import com.betting.simplebettingapi.helpers.TransactionType
 import com.betting.simplebettingapi.model.AccountModel
 import com.betting.simplebettingapi.model.WalletModel
@@ -41,6 +42,10 @@ class AccountServiceImpl(
 
     @Transactional
     override fun createAccount(accountDto: AccountDto): Long {
+        // checking username unique
+        if(accountRepository.findByUsername(accountDto.username).isPresent)
+            throw UsernameTakenException("Username is taken. Please try another one.")
+
         // creating and saving wallet
         val wallet = WalletModel(BigDecimal(0))
         val walletSaved = walletRepository.save(wallet)
