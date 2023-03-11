@@ -39,15 +39,4 @@ class MvcExceptionHandler() {
 
         return ResponseEntity(error, jsonHeaders, HttpStatus.BAD_REQUEST)
     }
-
-//    @ExceptionHandler(ConstraintViolationException::class)
-//    fun constraintViolationErrorHandler(ex: ConstraintViolationException): ResponseEntity<List<String>> {
-//        val errors = ArrayList<String>(ex.constraintViolations.size)
-//
-//        ex.constraintViolations.forEach { violation ->
-//            errors.add("${violation.propertyPath} : ${violation.message}")
-//        }
-//
-//        return ResponseEntity(errors, jsonHeaders, HttpStatus.BAD_REQUEST)
-//    }
 }
